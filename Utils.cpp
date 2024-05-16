@@ -9,8 +9,8 @@ using namespace std::chrono;
 class Utils {
     CreadorOperaciones creador;
 public: 
-    Utils () : creador("D:\\Sistemas Paralelos\\OperacionesAritmeticas\\datos.txt") {
-        
+    Utils () : creador("C:\\Users\\allen\\source\\repos\\OperacionesAritmeticas\\datos.txt") {
+    
     }
      double  timeSin(int iterations) {
         high_resolution_clock::time_point start, end;
@@ -50,9 +50,9 @@ public:
        creador.printMatrix(); // Imprimir la matriz modificada
        end = high_resolution_clock::now();
        auto sequentialTime = duration_cast<milliseconds>(end - start).count();
-       cout << "Tiempo de ejecución secuencial: " << sequentialTime << " Milisegundos" << endl;
+       cout << "Tiempo de ejecución Paralelo de IntensiveWork: " << sequentialTime << " Milisegundos" << endl;
      }
      void saveMatrix() {
-         creador.saveMatrixToFile("D:\\Sistemas Paralelos\\OperacionesAritmeticas\\resultados.txt");
+         creador.saveMatrixToFile("C:\\Users\\allen\\source\\repos\\OperacionesAritmeticas\\resultados.txt");
      }
 };

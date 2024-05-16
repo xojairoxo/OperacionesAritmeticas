@@ -14,14 +14,14 @@ int main() {
     cout << endl;
     cout << endl;
     
-    time =  utils.timeSin(100); // Ejecutar 100 iteraciones de cálculo de seno
-    std::cout << "Tiempo secuencial: SIN( " << time << " milisegundos )" << std::endl;
+    time =  utils.timeSin(1000); // Ejecutar 100 iteraciones de cálculo de seno
+    std::cout << "Tiempo en paralelo es: SIN( " << time << " milisegundos )" << std::endl;
 
-    time = utils.timeCos(100); // Ejecutar 100 iteraciones de cálculo de seno
-    std::cout << "Tiempo secuencial: COS( " << time << " milisegundos )" << std::endl;
+    time = utils.timeCos(1000); // Ejecutar 100 iteraciones de cálculo de seno
+    std::cout << "Tiempo en apralelo es: COS( " << time << " milisegundos )" << std::endl;
 
-    time = utils.timePow(100); // Ejecutar 100 iteraciones de cálculo de seno
-    std::cout << "Tiempo secuencial: POW( " << time << " milisegundos )" << std::endl;
+    time = utils.timePow(1000); // Ejecutar 100 iteraciones de cálculo de seno
+    std::cout << "Tiempo en paralelo es: POW( " << time << " milisegundos )" << std::endl;
 
     utils.saveMatrix();
 }
