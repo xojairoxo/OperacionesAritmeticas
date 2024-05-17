@@ -7,6 +7,7 @@ using namespace std;
 
 class CreadorOperaciones {
     vector<vector<double>> matrix;
+    vector<vector<double>> newMatrix;
 public:
     CreadorOperaciones(const string& filename) {
         // Leer la matriz desde el archivo de texto
@@ -19,8 +20,11 @@ public:
                 for (int j = 0; j < cols; ++j) {
                     file >> matrix[i][j]; // Leer los elementos de la matriz
                 }
-            }   
-            file.close(); // cerramos el archivo 
+            }
+            file.close(); // Cerrar el archivo 
+
+            // Inicializar la nueva matriz con las mismas dimensiones que la matriz original
+            newMatrix.resize(rows, vector<double>(cols));
         }
         else {
             cerr << "Error al abrir el archivo " << filename << endl;
@@ -62,27 +66,23 @@ public:
             }
         }
     }
-
-    // Función para realizar un cálculo intensivo el cual se le aplica el seno + coseno + matriz al cuadrado
     void calculateIntensiveWork(int iterations) {
-        // Realizar cálculos intensivos en la matriz
         for (int iter = 0; iter < iterations; ++iter) {
-            // Operaciones en la matriz
             for (size_t i = 0; i < matrix.size(); ++i) {
                 for (size_t j = 0; j < matrix[i].size(); ++j) {
-                    // Operación compleja usando seno, coseno y potencia
                     double oldValue = matrix[i][j];
-                    matrix[i][j] = sin(matrix[i][j]) + cos(matrix[i][j]) + pow(matrix[i][j], 2);
+                    newMatrix[i][j] = sin(matrix[i][j]) + cos(matrix[i][j]) + pow(matrix[i][j], 2);
                     double newValue = matrix[i][j];
                 }
             }
         }
     }
+
     void saveMatrixToFile(const std::string& filename) {
         std::ofstream outputFile(filename);
 
         if (outputFile.is_open()) {
-            for (const auto& row : matrix) {
+            for (const auto& row : newMatrix) {
                 for (const auto& value : row) {
                     outputFile << value << " ";
                 }
@@ -95,10 +95,18 @@ public:
             std::cerr << "Error al abrir el archivo " << filename << " para escritura." << std::endl;
         }
     }
-
-    // Función para imprimir la matriz
+    // Función para imprimir la matriz original
     void printMatrix() const {
         for (const auto& row : matrix) {
+            for (double val : row) {
+                cout << val << "     ";
+            }
+            cout << endl;
+        }
+    }
+    // Función para imprimir la nueva matriz con los nuevos calculos 
+    void printNewMatrix() const {
+        for (const auto& row : newMatrix) {
             for (double val : row) {
                 cout << val << "     ";
             }

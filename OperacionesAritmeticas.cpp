@@ -8,7 +8,8 @@ using namespace std::chrono;
 int main() {
     Utils utils;
     double time;
-    utils.timeIntensiveWork(100);
+    utils.timeIntensiveWork(1);
+
 
     cout << endl;
     cout << endl;
