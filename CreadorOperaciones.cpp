@@ -129,9 +129,9 @@ public:
             for (int iter = 0; iter < iterations; ++iter) {
                 for (int i = start; i < end; ++i) {
                     for (size_t j = 0; j < matrix[i].size(); ++j) {
-                        double oldValue = matrix[i][j];
                         // Operación compleja usando seno, coseno y potencia
-                        matrix[i][j] = sin(oldValue) + cos(oldValue) + pow(oldValue, 2);
+                        double oldValue = matrix[i][j];
+                        matrix[i][j] = sin(matrix[i][j]) + cos(matrix[i][j]) + pow(matrix[i][j], 2);
                         double newValue = matrix[i][j];
                     }
                 }
