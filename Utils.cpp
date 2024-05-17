@@ -46,8 +46,14 @@ public:
      void timeIntensiveWork(int iterations) {
          high_resolution_clock::time_point start, end;
        start = high_resolution_clock::now();
+       creador.printMatrix();
+       cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << endl;
+
        creador.calculateIntensiveWork(iterations); // Realizar cálculos intensivos con 100 iteraciones
-       creador.printMatrix(); // Imprimir la matriz modificada
+       creador.printNewMatrix(); // Imprimir la matriz modificada
        end = high_resolution_clock::now();
        auto sequentialTime = duration_cast<milliseconds>(end - start).count();
        cout << "Tiempo de ejecución Paralelo de IntensiveWork: " << sequentialTime << " Milisegundos" << endl;
