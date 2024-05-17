@@ -46,7 +46,7 @@ public:
      void timeIntensiveWork(int iterations) {
          high_resolution_clock::time_point start, end;
        start = high_resolution_clock::now();
-       creador.calculateIntensiveWork(10); // Realizar cálculos intensivos con 100 iteraciones
+       creador.calculateIntensiveWork(iterations); // Realizar cálculos intensivos con 100 iteraciones
        creador.printMatrix(); // Imprimir la matriz modificada
        end = high_resolution_clock::now();
        auto sequentialTime = duration_cast<milliseconds>(end - start).count();
