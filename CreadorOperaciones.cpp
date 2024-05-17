@@ -49,16 +49,6 @@ public:
             }
             };
     }
-        // Crear y lanzar hilos
-       // for (int t = 0; t < num_threads; ++t) {
-         //   int start = t * block_size;
-           // int end = (t == num_threads - 1) ? matrix.size() : (t + 1) * block_size;
-            //threads[t] = thread(sinThreadFunc, start, end);
-       // }
-        // Esperar a que todos los hilos terminen
-        //for (auto& th : threads) {
-          //  th.join();
-        //}
     
 
 
@@ -82,19 +72,6 @@ public:
                 }
             }
             };
-
-        // Crear y ejecutar los hilos
-       // int start = 0;
-       // for (int i = 0; i < num_threads; ++i) {
-       //     int end = (i == num_threads - 1) ? matrix.size() : start + block_size;
-        //    threads[i] = std::thread(cosThreadFunc, start, end);
-         //   start = end;
-       // }
-
-        // Esperar a que todos los hilos terminen
-       // for (auto& thread : threads) {
-       //     thread.join();
-       // }
     }
 
     void calculatePow(int iterations) {
@@ -115,41 +92,65 @@ public:
             };
     }
 
-    // Función para realizar un cálculo intensivo el cual se le aplica el seno + coseno + matriz al cuadrado
+    //// Función para realizar un cálculo intensivo el cual se le aplica el seno + coseno + matriz al cuadrado
+    //void calculateIntensiveWork(int iterations) {
+    //    // Determinar el número de hilos basado en el número de núcleos de la CPU
+    //    int num_threads = thread::hardware_concurrency();
+    //    vector<thread> threads(num_threads); // Vector de hilos
+
+    //    // Dividir la matriz en bloques para distribuir el trabajo entre los hilos
+    //    int block_size = matrix.size() / num_threads;
+    //    // Función lambda para ejecutar en cada hilo
+    //    auto intensiveWorkThreadFunc = [this, iterations, block_size](int start, int end) {
+    //        for (int iter = 0; iter < iterations; ++iter) {
+    //            for (int i = start; i < end; ++i) {
+    //                for (size_t j = 0; j < matrix[i].size(); ++j) {
+    //                    // Operación compleja usando seno, coseno y potencia
+    //                    double oldValue = matrix[i][j];
+    //                    matrix[i][j] = sin(matrix[i][j]) + cos(matrix[i][j]) + pow(matrix[i][j], 2);
+    //                    double newValue = matrix[i][j];
+    //                }
+    //            }
+    //        }
+    //        };
+    //}
+
     void calculateIntensiveWork(int iterations) {
-        // Determinar el número de hilos basado en el número de núcleos de la CPU
-        int num_threads = thread::hardware_concurrency();
-        vector<thread> threads(num_threads); // Vector de hilos
+        unsigned int numThreads = thread::hardware_concurrency();
+        vector<thread> threads;
+        size_t numRows = matrix.size();
 
-        // Dividir la matriz en bloques para distribuir el trabajo entre los hilos
-        int block_size = matrix.size() / num_threads;
-
-        // Función lambda para ejecutar en cada hilo
-        auto intensiveWorkThreadFunc = [this, iterations, block_size](int start, int end) {
+        // Dividir el trabajo entre los hilos
+        auto worker = [this, iterations](size_t startRow, size_t endRow) {
             for (int iter = 0; iter < iterations; ++iter) {
-                for (int i = start; i < end; ++i) {
+                for (size_t i = startRow; i < endRow; ++i) {
                     for (size_t j = 0; j < matrix[i].size(); ++j) {
-                        // Operación compleja usando seno, coseno y potencia
-                        double oldValue = matrix[i][j];
+                        // Operación compleja usando seno, coseno y potencia   
                         matrix[i][j] = sin(matrix[i][j]) + cos(matrix[i][j]) + pow(matrix[i][j], 2);
-                        double newValue = matrix[i][j];
                     }
                 }
             }
-            };
+        };
 
-        // Crear y lanzar hilos
-    //    for (int t = 0; t < num_threads; ++t) {
-         //   int start = t * block_size;
-        //    int end = (t == num_threads - 1) ? matrix.size() : (t + 1) * block_size;
-        //    threads[t] = thread(intensiveWorkThreadFunc, start, end);
-       // }
+        size_t chunkSize = numRows / numThreads;
+        size_t remainingRows = numRows % numThreads;
 
-        // Esperar a que todos los hilos terminen
-      //  for (auto& th : threads) {
-       //     th.join();
-       // }
+        size_t currentStartRow = 0;
+        for (unsigned int t = 0; t < numThreads; ++t) {
+            size_t currentEndRow = currentStartRow + chunkSize;
+            if (t == numThreads - 1) {
+                currentEndRow += remainingRows;
+            }
+            threads.emplace_back(worker, currentStartRow, currentEndRow);
+            currentStartRow = currentEndRow;
+        }
+
+        for (auto& thread : threads) {
+            thread.join();
+        }
     }
+
+
     void saveMatrixToFile(const std::string& filename) {
         std::ofstream outputFile(filename);
 
