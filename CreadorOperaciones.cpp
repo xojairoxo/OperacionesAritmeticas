@@ -31,6 +31,43 @@ public:
         }
     }
 
+    // Función para realizar un cálculo intensivo utilizando la función seno
+    void calculateSin(int iterations) {
+        unsigned int numThreads = thread::hardware_concurrency();
+        vector<thread> threads;
+        size_t numRows = matrix.size();
+
+        auto worker = [this, iterations](size_t startRow, size_t endRow) {
+            for (int iter = 0; iter < iterations; ++iter) {
+                for (size_t i = startRow; i < endRow; ++i) {
+                    for (size_t j = 0; j < matrix[i].size(); ++j) {
+                        // Operación de seno sobre cada elemento de la matriz
+                        newMatrix[i][j] = sin(matrix[i][j]);
+                    }
+                }
+            }
+            };
+
+        size_t chunkSize = numRows / numThreads;
+        size_t remainingRows = numRows % numThreads;
+
+        size_t currentStartRow = 0;
+        for (unsigned int t = 0; t < numThreads; ++t) {
+            size_t currentEndRow = currentStartRow + chunkSize;
+            if (t == numThreads - 1) {
+                currentEndRow += remainingRows;
+            }
+            threads.emplace_back(worker, currentStartRow, currentEndRow);
+            currentStartRow = currentEndRow;
+        }
+
+        for (auto& thread : threads) {
+            thread.join();
+        }
+    }
+
+
+    /*
     void calculateSin(int iterations) {
         // Determinar el número de hilos basado en el número de núcleos de la CPU
         int num_threads = thread::hardware_concurrency();
@@ -51,9 +88,43 @@ public:
                 }
             }
             };
-    }
-    
+    }*/
+    void calculateCos(int iterations) {
+        unsigned int numThreads = thread::hardware_concurrency();
+        vector<thread> threads;
+        size_t numRows = matrix.size();
 
+        auto worker = [this, iterations](size_t startRow, size_t endRow) {
+            for (int iter = 0; iter < iterations; ++iter) {
+                for (size_t i = startRow; i < endRow; ++i) {
+                    for (size_t j = 0; j < matrix[i].size(); ++j) {
+                        // Operación de coseno sobre cada elemento de la matriz
+                        newMatrix[i][j] = cos(matrix[i][j]);
+                    }
+                }
+            }
+            };
+
+        size_t chunkSize = numRows / numThreads;
+        size_t remainingRows = numRows % numThreads;
+
+        size_t currentStartRow = 0;
+        for (unsigned int t = 0; t < numThreads; ++t) {
+            size_t currentEndRow = currentStartRow + chunkSize;
+            if (t == numThreads - 1) {
+                currentEndRow += remainingRows;
+            }
+            threads.emplace_back(worker, currentStartRow, currentEndRow);
+            currentStartRow = currentEndRow;
+        }
+
+        for (auto& thread : threads) {
+            thread.join();
+        }
+    }
+
+
+    /*
 
     void calculateCos(int iterations) {
         // Determinar el número de hilos basado en el número de núcleos de la CPU
@@ -75,8 +146,44 @@ public:
                 }
             }
             };
+    }*/
+
+
+    void calculatePow(int iterations) {
+        unsigned int numThreads = thread::hardware_concurrency();
+        vector<thread> threads;
+        size_t numRows = matrix.size();
+
+        auto worker = [this, iterations](size_t startRow, size_t endRow) {
+            for (int iter = 0; iter < iterations; ++iter) {
+                for (size_t i = startRow; i < endRow; ++i) {
+                    for (size_t j = 0; j < matrix[i].size(); ++j) {
+                        // Operación de potencia sobre cada elemento de la matriz
+                        newMatrix[i][j] = pow(matrix[i][j], 2);
+                    }
+                }
+            }
+            };
+
+        size_t chunkSize = numRows / numThreads;
+        size_t remainingRows = numRows % numThreads;
+
+        size_t currentStartRow = 0;
+        for (unsigned int t = 0; t < numThreads; ++t) {
+            size_t currentEndRow = currentStartRow + chunkSize;
+            if (t == numThreads - 1) {
+                currentEndRow += remainingRows;
+            }
+            threads.emplace_back(worker, currentStartRow, currentEndRow);
+            currentStartRow = currentEndRow;
+        }
+
+        for (auto& thread : threads) {
+            thread.join();
+        }
     }
 
+    /*
     void calculatePow(int iterations) {
         int num_threads = thread::hardware_concurrency();
         vector<thread> threads(num_threads); // Vector de hilos
@@ -93,7 +200,7 @@ public:
                 }
             }
             };
-    }
+    }*/
 
     //// Función para realizar un cálculo intensivo el cual se le aplica el seno + coseno + matriz al cuadrado
     //void calculateIntensiveWork(int iterations) {
