@@ -33,35 +33,35 @@ public:
 
     // Función para realizar un cálculo intensivo utilizando la función seno
     void calculateSin(int iterations) {
-        unsigned int numThreads = thread::hardware_concurrency();
-        vector<thread> threads;
-        size_t numRows = matrix.size();
+        unsigned int numThreads = thread::hardware_concurrency();  // Obtiene el número de hilos soportados por el hardware
+        vector<thread> threads;  // Vector que almacenará los hilos
+        size_t numRows = matrix.size();  // Obtiene el número de filas de la matriz
 
-        auto worker = [this, iterations](size_t startRow, size_t endRow) {
-            for (int iter = 0; iter < iterations; ++iter) {
-                for (size_t i = startRow; i < endRow; ++i) {
-                    for (size_t j = 0; j < matrix[i].size(); ++j) {
-                        // Operación de seno sobre cada elemento de la matriz
+        auto worker = [this, iterations](size_t startRow, size_t endRow) {  // Función lambda que realiza el trabajo en paralelo
+            for (int iter = 0; iter < iterations; ++iter) {  // Itera sobre el número de iteraciones
+                for (size_t i = startRow; i < endRow; ++i) {  // Itera sobre las filas asignadas al hilo
+                    for (size_t j = 0; j < matrix[i].size(); ++j) {  // Itera sobre las columnas de la matriz
+                        // Calcula el seno de cada elemento de la matriz y lo asigna a la nueva matriz
                         newMatrix[i][j] = sin(matrix[i][j]);
                     }
                 }
             }
             };
 
-        size_t chunkSize = numRows / numThreads;
-        size_t remainingRows = numRows % numThreads;
+        size_t chunkSize = numRows / numThreads;  // Tamaño de cada bloque de filas para distribuir entre hilos
+        size_t remainingRows = numRows % numThreads;  // Filas restantes que no entran exactamente en los bloques
 
-        size_t currentStartRow = 0;
-        for (unsigned int t = 0; t < numThreads; ++t) {
-            size_t currentEndRow = currentStartRow + chunkSize;
-            if (t == numThreads - 1) {
-                currentEndRow += remainingRows;
+        size_t currentStartRow = 0;  // Índice de inicio de las filas para el primer bloque
+        for (unsigned int t = 0; t < numThreads; ++t) {  // Itera sobre el número de hilos
+            size_t currentEndRow = currentStartRow + chunkSize;  // Índice de fin de las filas para el bloque actual
+            if (t == numThreads - 1) {  // Si es el último hilo
+                currentEndRow += remainingRows;  // Añade las filas restantes al último bloque
             }
-            threads.emplace_back(worker, currentStartRow, currentEndRow);
-            currentStartRow = currentEndRow;
+            threads.emplace_back(worker, currentStartRow, currentEndRow);  // Crea un hilo con la función lambda y los parámetros de filas
+            currentStartRow = currentEndRow;  // Actualiza el índice de inicio para el siguiente bloque
         }
 
-        for (auto& thread : threads) {
+        for (auto& thread : threads) {  // Espera a que todos los hilos terminen
             thread.join();
         }
     }
